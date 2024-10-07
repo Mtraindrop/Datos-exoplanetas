@@ -56,6 +56,7 @@ def home():
     plt.savefig(img1, format='png')
     img1.seek(0)
     plot_url1 = base64.b64encode(img1.getvalue()).decode()
+    print("Gráfico 1 generado:", plot_url1 is not None)  # Debug
 
     # Gráfico 2: Temperatura Efectiva de la Estrella vs. Radio del Planeta
     plt.figure(figsize=(10, 6))
@@ -74,6 +75,7 @@ def home():
     plt.savefig(img2, format='png')
     img2.seek(0)
     plot_url2 = base64.b64encode(img2.getvalue()).decode()
+    print("Gráfico 2 generado:", plot_url2 is not None)  # Debug
 
     # Gráfico 3: Mapa Estelar de Exoplanetas Cercanos
     datos_filtrados = datos[['ra', 'dec', 'sy_vmag']].dropna()
@@ -92,6 +94,7 @@ def home():
     plt.savefig(img3, format='png')
     img3.seek(0)
     plot_url3 = base64.b64encode(img3.getvalue()).decode()
+    print("Gráfico 3 generado:", plot_url3 is not None)  # Debug
 
     # Gráfico 4: Mapa Estelar de Exoplanetas Habitables
     habitables = datos[(datos['pl_rade'] >= 0.5) & (datos['pl_rade'] <= 2)]
@@ -112,15 +115,21 @@ def home():
     plt.savefig(img4, format='png')
     img4.seek(0)
     plot_url4 = base64.b64encode(img4.getvalue()).decode()
+    print("Gráfico 4 generado:", plot_url4 is not None)  # Debug
+
+    # Gráfico de prueba para verificar la generación
+    plt.figure(figsize=(5, 5))
+    plt.plot([1, 2, 3], [1, 4, 9])  # Gráfico de prueba
+    img_test = BytesIO()
+    plt.savefig(img_test, format='png')
+    img_test.seek(0)
+    plot_url_test = base64.b64encode(img_test.getvalue()).decode()
+    print("Gráfico de prueba generado:", plot_url_test is not None)  # Debug
 
     # Pasar los gráficos y exoplanetas habitables al template
     return render_template('index.html', plot_url1=plot_url1, plot_url2=plot_url2, 
-                           plot_url3=plot_url3, plot_url4=plot_url4, exoplanetas=exoplanetas_habitables)
+                           plot_url3=plot_url3, plot_url4=plot_url4, 
+                           plot_url_test=plot_url_test, exoplanetas=exoplanetas_habitables)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
