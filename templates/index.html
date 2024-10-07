@@ -5,12 +5,12 @@
     <title>Exoplanetas Habitables</title>
 </head>
 <body>
-    <h1>Exoplanetas Habitables</h1>
+    <h1>Exoplanetas Habitables más Cercanos</h1>
     
     <!-- Gráfico 1 -->
     <h2>Evolución del Radio Planetario y Período Orbital</h2>
-    <img src="data:image/png;base64,{{ plot_url1 }}" alt="Gráfico de Exoplanetas Habitables">
-    
+    <img src="data:image/png;base64,{{ plot_url1 }}" alt="Gráficos de Exoplanetas Habitables">
+
     <!-- Gráfico 2 -->
     <h2>Temperatura Efectiva de la Estrella vs. Radio del Planeta</h2>
     <img src="data:image/png;base64,{{ plot_url2 }}" alt="Gráfico de Exoplanetas Habitables">
@@ -19,13 +19,18 @@
     <h2>Mapa Estelar de Exoplanetas Cercanos</h2>
     <img src="data:image/png;base64,{{ plot_url3 }}" alt="Mapa Estelar de Exoplanetas">
 
-    <h2>Lista de Exoplanetas Habitables</h2>
+    <!-- Gráfico 4 -->
+    <h2>Mapa Estelar de Exoplanetas Habitables</h2>
+    <img src="data:image/png;base64,{{ plot_url4 }}" alt="Mapa Estelar de Exoplanetas Habitables">
+
+    <h2>Lista de los 50 Exoplanetas más Cercanos</h2>
     <table border="1">
         <tr>
             <th>Nombre</th>
             <th>Temperatura Estelar (K)</th>
             <th>Radio Estelar (Radio del Sol)</th>
             <th>Radio Planetario (Radio de la Tierra)</th>
+            <th>Magnitud Aparente (sy_vmag)</th>
         </tr>
         {% for index, exoplaneta in exoplanetas.iterrows() %}
             <tr>
@@ -33,8 +38,11 @@
                 <td>{{ exoplaneta['st_teff'] }}</td>
                 <td>{{ exoplaneta['st_rad'] }}</td>
                 <td>{{ exoplaneta['pl_rade'] }}</td>
+                <td>{{ exoplaneta['sy_vmag'] }}</td>
             </tr>
         {% endfor %}
     </table>
 </body>
 </html>
+
+
