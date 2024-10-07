@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import os
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -10,7 +11,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    archivo_csv = 'exoplaneta.csv'
+    archivo_csv = os.getenv('CSV_FILE_PATH', 'exoplaneta.csv') 
     datos = pd.read_csv(archivo_csv, comment='#', on_bad_lines='skip')
 
     # Limpieza de nombres de columnas
