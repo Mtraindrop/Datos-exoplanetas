@@ -1,41 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Exoplanetas Habitables</title>
-</head>
-<body>
-    <h1>Exoplanetas Habitables</h1>
-    
-    <!-- Gráfico 1 -->
-    <h2>Evolución del Radio Planetario y Período Orbital</h2>
-    <img src="data:image/png;base64,{{ plot_url1 }}" alt="Gráfico de Exoplanetas Habitables">
-    
-    <!-- Gráfico 2 -->
-    <h2>Temperatura Efectiva de la Estrella vs. Radio del Planeta</h2>
-    <img src="data:image/png;base64,{{ plot_url2 }}" alt="Gráfico de Exoplanetas Habitables">
+<h1>Exoplanetas Habitables</h1>
+<h2>Temperatura Efectiva vs Radio Planetario</h2>
+<img src="data:image/png;base64,{{ plot_url }}" alt="Gráfico de Exoplanetas Habitables">
 
-    <!-- Gráfico 3 -->
-    <h2>Mapa Estelar de Exoplanetas Cercanos</h2>
-    <img src="data:image/png;base64,{{ plot_url3 }}" alt="Mapa Estelar de Exoplanetas">
-
-    <h2>Lista de Exoplanetas Habitables</h2>
-    <table border="1">
-        <tr>
-            <th>Nombre</th>
-            <th>Temperatura Estelar (K)</th>
-            <th>Radio Estelar (Radio del Sol)</th>
-            <th>Radio Planetario (Radio de la Tierra)</th>
-        </tr>
-        {% for index, exoplaneta in exoplanetas.iterrows() %}
-            <tr>
-                <td>{{ exoplaneta['pl_name'] }}</td>
-                <td>{{ exoplaneta['st_teff'] }}</td>
-                <td>{{ exoplaneta['st_rad'] }}</td>
-                <td>{{ exoplaneta['pl_rade'] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
 
