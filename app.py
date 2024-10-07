@@ -1,4 +1,3 @@
-from flask import Flask, render_template
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')  # Usar un backend que no dependa de una GUI
@@ -6,11 +5,8 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    archivo_csv = 'exoplaneta.csv'
+def main():
+    archivo_csv = 'exoplaneta.csv'  # Asegúrate de que este archivo esté en la misma carpeta que este script
     datos = pd.read_csv(archivo_csv, comment='#', on_bad_lines='skip')
 
     # Limpieza de nombres de columnas
@@ -23,10 +19,9 @@ def home():
     # Filtrado de exoplanetas habitables
     exoplanetas_habitables = estrellas_tipo_solar[(estrellas_tipo_solar['pl_rade'] >= 0.5) & 
                                                   (estrellas_tipo_solar['pl_rade'] <= 2.5)]
-    
+
     # Gráfico 1: Evolución del Radio Planetario
     plt.figure(figsize=(14, 8))
-
     plt.subplot(2, 1, 1)
     for planeta in exoplanetas_habitables['pl_name']:
         datos_planeta = exoplanetas_habitables[exoplanetas_habitables['pl_name'] == planeta]
@@ -50,15 +45,8 @@ def home():
     plt.grid(True)
 
     plt.tight_layout()
-
-    # Convertir el gráfico 1 a imagen base64
-    img1 = BytesIO()
-    plt.savefig(img1, format='png')
-    img1.seek(0)
-    plot_url1 = base64.b64encode(img1.getvalue()).decode()
-
-    # Verifica que plot_url1 esté correcto
-    print("plot_url1:", plot_url1)  # Agrega esta línea para verificar el contenido
+    plt.savefig('grafico1.png')  # Guardar el gráfico como imagen
+    plt.close()
 
     # Gráfico 2: Temperatura Efectiva de la Estrella vs. Radio del Planeta
     plt.figure(figsize=(10, 6))
@@ -71,15 +59,8 @@ def home():
     plt.ylim(0, 3)
     plt.axhline(y=1, color='r', linestyle='--', label='Radio de la Tierra')
     plt.legend()
-
-    # Convertir el gráfico 2 a imagen base64
-    img2 = BytesIO()
-    plt.savefig(img2, format='png')
-    img2.seek(0)
-    plot_url2 = base64.b64encode(img2.getvalue()).decode()
-
-    # Verifica que plot_url2 esté correcto
-    print("plot_url2:", plot_url2)  # Agrega esta línea para verificar el contenido
+    plt.savefig('grafico2.png')  # Guardar el gráfico como imagen
+    plt.close()
 
     # Gráfico 3: Mapa Estelar de Exoplanetas Cercanos
     datos_filtrados = datos[['ra', 'dec', 'sy_vmag']].dropna()
@@ -92,15 +73,8 @@ def home():
     plt.xlabel('Ascensión Recta (RA) [grados]')
     plt.ylabel('Declinación (Dec) [grados]')
     plt.grid(True)
-
-    # Convertir el gráfico 3 a imagen base64
-    img3 = BytesIO()
-    plt.savefig(img3, format='png')
-    img3.seek(0)
-    plot_url3 = base64.b64encode(img3.getvalue()).decode()
-
-    # Verifica que plot_url3 esté correcto
-    print("plot_url3:", plot_url3)  # Agrega esta línea para verificar el contenido
+    plt.savefig('grafico3.png')  # Guardar el gráfico como imagen
+    plt.close()
 
     # Gráfico 4: Mapa Estelar de Exoplanetas Habitables
     habitables = datos[(datos['pl_rade'] >= 0.5) & (datos['pl_rade'] <= 2)]
@@ -115,20 +89,10 @@ def home():
     plt.xlabel('Ascensión Recta (RA) [grados]')
     plt.ylabel('Declinación (Dec) [grados]')
     plt.grid(True)
+    plt.savefig('grafico4.png')  # Guardar el gráfico como imagen
+    plt.close()
 
-    # Convertir el gráfico 4 a imagen base64
-    img4 = BytesIO()
-    plt.savefig(img4, format='png')
-    img4.seek(0)
-    plot_url4 = base64.b64encode(img4.getvalue()).decode()
+if __name__ == "__main__":
+    main()
 
-    # Verifica que plot_url4 esté correcto
-    print("plot_url4:", plot_url4)  # Agrega esta línea para verificar el contenido
-
-    # Pasar los gráficos y exoplanetas habitables al template
-    return render_template('index.html', plot_url1=plot_url1, plot_url2=plot_url2, 
-                           plot_url3=plot_url3, plot_url4=plot_url4, exoplanetas=exoplanetas_habitables)
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
