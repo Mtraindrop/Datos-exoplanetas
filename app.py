@@ -10,8 +10,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    archivo_csv = 'exoplaneta.csv'  # Asegúrate de que este archivo está en la misma carpeta
+    archivo_csv = 'exoplaneta.csv'  # Asegúrate de que el archivo esté en la ubicación correcta
     datos = pd.read_csv(archivo_csv, comment='#', on_bad_lines='skip')
+
+    # Imprimir los datos para verificar que se están cargando
+    print(datos.head())  # Esto imprimirá las primeras filas del DataFrame en la consola
 
     # Limpieza de nombres de columnas
     datos.columns = datos.columns.str.strip()
@@ -26,7 +29,6 @@ def home():
 
     # Gráfico 1: Evolución del Radio Planetario
     plt.figure(figsize=(14, 8))
-
     plt.subplot(2, 1, 1)
     for planeta in exoplanetas_habitables['pl_name']:
         datos_planeta = exoplanetas_habitables[exoplanetas_habitables['pl_name'] == planeta]
@@ -38,29 +40,10 @@ def home():
     plt.legend()
     plt.grid(True)
 
-    plt.subplot(2, 1, 2)
-    for planeta in exoplanetas_habitables['pl_name']:
-        datos_planeta = exoplanetas_habitables[exoplanetas_habitables['pl_name'] == planeta]
-        if not datos_planeta.empty:
-            plt.plot(datos_planeta['releasedate'], datos_planeta['pl_orbper'], marker='o', label=planeta)
-    plt.title('Evolución del Período Orbital de los Exoplanetas Habitables')
-    plt.xlabel('Fecha de Publicación/Actualización')
-    plt.ylabel('Período Orbital [días]')
-    plt.legend()
-    plt.grid(True)
-
-    plt.tight_layout()
-
-    # Convertir el gráfico a imagen base64
-    img1 = BytesIO()
-    plt.savefig(img1, format='png')
-    img1.seek(0)
-    plot_url1 = base64.b64encode(img1.getvalue()).decode()
-
     # Gráfico 2: Temperatura Efectiva de la Estrella vs. Radio del Planeta
-    plt.figure(figsize=(10, 6))
+    plt.subplot(2, 1, 2)
     plt.scatter(exoplanetas_habitables['st_teff'], exoplanetas_habitables['pl_rade'], alpha=0.6)
-    plt.title('Exoplanetas Habitables')
+    plt.title('Temperatura Efectiva de la Estrella vs. Radio del Planeta')
     plt.xlabel('Temperatura Efectiva de la Estrella (K)')
     plt.ylabel('Radio del Planeta (Radio de la Tierra)')
     plt.grid(True)
@@ -69,61 +52,22 @@ def home():
     plt.axhline(y=1, color='r', linestyle='--', label='Radio de la Tierra')
     plt.legend()
 
-    # Convertir el gráfico a imagen base64
-    img2 = BytesIO()
-    plt.savefig(img2, format='png')
-    img2.seek(0)
-    plot_url2 = base64.b64encode(img2.getvalue()).decode()
-
-    # Gráfico 3: Mapa Estelar de Exoplanetas Cercanos
-    datos_filtrados = datos[['ra', 'dec', 'sy_vmag']].dropna()
-    tamanio_puntos = 100 / (datos_filtrados['sy_vmag'] + 1)
-
-    plt.figure(figsize=(10, 8))
-    plt.scatter(datos_filtrados['ra'], datos_filtrados['dec'], s=tamanio_puntos, c='white', edgecolors='blue')
-    plt.gca().invert_xaxis()
-    plt.title('Mapa Estelar de Exoplanetas Cercanos')
-    plt.xlabel('Ascensión Recta (RA) [grados]')
-    plt.ylabel('Declinación (Dec) [grados]')
-    plt.grid(True)
+    plt.tight_layout()
 
     # Convertir el gráfico a imagen base64
-    img3 = BytesIO()
-    plt.savefig(img3, format='png')
-    img3.seek(0)
-    plot_url3 = base64.b64encode(img3.getvalue()).decode()
+    img1 = BytesIO()
+    plt.savefig(img1, format='png')
+    img1.seek(0)
+    plot_url1 = base64.b64encode(img1.getvalue()).decode()
+    print("Gráfico 1 generado")  # Verifica que se generó correctamente
 
-    # Gráfico 4: Mapa Estelar de Exoplanetas Habitables
-    habitables = datos[(datos['pl_rade'] >= 0.5) & (datos['pl_rade'] <= 2)]
-    habitables_filtrados = habitables[['ra', 'dec', 'sy_vmag']].dropna()
-    tamanio_puntos_habitables = 100 / (habitables_filtrados['sy_vmag'] + 1)
-
-    plt.figure(figsize=(10, 8))
-    plt.scatter(habitables_filtrados['ra'], habitables_filtrados['dec'], 
-                s=tamanio_puntos_habitables, c='green', edgecolors='black')
-    plt.gca().invert_xaxis()
-    plt.title('Mapa Estelar de Exoplanetas Habitables')
-    plt.xlabel('Ascensión Recta (RA) [grados]')
-    plt.ylabel('Declinación (Dec) [grados]')
-    plt.grid(True)
-
-    # Convertir el gráfico a imagen base64
-    img4 = BytesIO()
-    plt.savefig(img4, format='png')
-    img4.seek(0)
-    plot_url4 = base64.b64encode(img4.getvalue()).decode()
-
-    # Verificar que las imágenes se estén generando correctamente
-    print("Gráfico 1 generado:", plot_url1[:30])  # Mostrar solo una parte de la imagen
-    print("Gráfico 2 generado:", plot_url2[:30])
-    print("Gráfico 3 generado:", plot_url3[:30])
-    print("Gráfico 4 generado:", plot_url4[:30])
+    # Aquí puedes agregar el código para generar otros gráficos y convertirlos a base64
 
     # Pasar los gráficos y exoplanetas habitables al template
-    return render_template('index.html', plot_url1=plot_url1, plot_url2=plot_url2, 
-                           plot_url3=plot_url3, plot_url4=plot_url4, exoplanetas=exoplanetas_habitables)
+    return render_template('index.html', plot_url1=plot_url1, exoplanetas=exoplanetas_habitables)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
